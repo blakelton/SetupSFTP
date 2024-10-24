@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Function to check if script is run as root
+check_root() {
+    if [ "$EUID" -ne 0 ]; then
+        echo "This script must be run as root or with sudo privileges."
+        exit 1
+    fi
+}
+
 # Logging function
 log() {
     local LOGFILE="$(basename "$0").log"
@@ -254,6 +262,9 @@ if [[ "$SFTP_DIR" == "/home/$SFTP_USER"* ]]; then
     log "Error: The specified directory ($SFTP_DIR) is within the user's home directory."
     exit 1
 fi
+
+# Call function to ensure the script is run with root privileges
+check_root
 
 # Start script execution
 log "Starting SFTP setup script."
